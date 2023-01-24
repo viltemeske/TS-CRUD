@@ -1,5 +1,9 @@
+import CarsCollection from '../helpers/cars-collection';
+
 class App {
   private htmlElement: HTMLElement;
+
+  private carsCollection: CarsCollection;
 
   constructor(selector: string) {
     const foundElement = document.querySelector<HTMLElement>(selector);
