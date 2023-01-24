@@ -22,5 +22,17 @@ type TableProps<Type> = {
 
         this.initialize();
   }
+  private initializeHead = (): void => {
+    const { title, columns } = this.props;
 
+    const headersArray = Object.values(columns);
+    const headersRowHtmlString = headersArray.map((header) => `<th>${header}</th>`).join('');
+
+    this.thead.innerHTML = `
+      <tr>
+        <th colspan="${headersArray.length}" class="text-center h3">${title}</th>
+      </tr>
+      <tr>${headersRowHtmlString}</tr>
+    `;
+  };
 }
