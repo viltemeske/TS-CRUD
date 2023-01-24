@@ -19,6 +19,8 @@ type TableProps<Type> = {
         this.htmlElement = document.createElement('table');
         this.thead = document.createElement('thead');
         this.tbody = document.createElement('tbody');
+
+        this.initialize();
   }
 
 }
