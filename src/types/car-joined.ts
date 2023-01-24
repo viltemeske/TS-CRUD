@@ -1,8 +1,8 @@
-import Brand from "./brand";
-import Model from "./model";
-import Car from "./car";
+import Brand from './brand';
+import Model from './model';
+import Car from './car';
 
-type CarJoined = {
+type CarJoined = Omit<Car, 'modelId'> & {
     brand: Brand['title'],
     model: Model['title'],
 };
