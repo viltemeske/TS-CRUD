@@ -61,5 +61,25 @@ export type TableProps<Type> = {
       <tr>${headersRowHtmlString}</tr>
     `;
   };
+
+  private initializeBody = (): void => {
+    const { rowsData, columns } = this.props;
+
+    this.tbody.innerHTML = '';
+    const rowsHtmlElements = rowsData
+      .map((rowData) => {
+        const rowHtmlElement = document.createElement('tr');
+
+        const cellsHtmlString = Object.keys(columns)
+          .map((key) => `<td>${rowData[key]}</td>`)
+          .join(' ');
+
+        rowHtmlElement.innerHTML = cellsHtmlString;
+
+        return rowHtmlElement;
+      });
+
+    this.tbody.append(...rowsHtmlElements);
+  };
 }
 export default Table;
