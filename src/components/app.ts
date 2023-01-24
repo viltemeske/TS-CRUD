@@ -17,13 +17,9 @@ class App {
     this.htmlElement = foundElement;
   }
 
-  initialize = (): void => {
-    const container = document.createElement('div');
-    container.className = 'container my-5';
-    container.innerHTML = 'Laukiu kol būsiu sukurtas';
-
-    this.htmlElement.append(container);
-  };
+  initialize() {
+    this.htmlElement.innerHTML = 'app turinys';
+  }
 }
 
-export default App;
+  export default App;
