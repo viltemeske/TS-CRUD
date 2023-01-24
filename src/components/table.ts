@@ -11,23 +11,42 @@ export type TableProps<Type> = {
     rowsData: Type[],
   };
 
-  class Table {
-      private props: TableProps;
+  class Table<Type extends RowData> {
+      public htmlElement: HTMLTableElement;
+
+      private props: TableProps<Type>;
 
       private tbody: HTMLTableSectionElement;
 
       private thead: HTMLTableSectionElement;
 
-      public htmlElement: HTMLTableElement;
-
       public constructor(props: TableProps<Type>) {
         this.props = props;
+        this.checkColumnsCompatability();
+
         this.htmlElement = document.createElement('table');
         this.thead = document.createElement('thead');
         this.tbody = document.createElement('tbody');
 
         this.initialize();
   }
+
+  private checkColumnsCompatability = (): void => {
+    const { rowsData, columns } = this.props;
+
+    if (this.props.rowsData.length === 0) return;
+    const columnCount = countObjectProperties(columns);
+
+    const columnsCompatableWithRowsData = rowsData.every((row) => {
+      const rowCellsCount = countObjectProperties(row);
+
+      return rowCellsCount === columnCount;
+    });
+
+    if (!columnsCompatableWithRowsData) {
+      throw new Error('Nesutampa lentelės stulpelių skaičius su eilučių stulpelių skaičiumi');
+    }
+  };
 
   private initializeHead = (): void => {
     const { title, columns } = this.props;
