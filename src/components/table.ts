@@ -81,5 +81,16 @@ export type TableProps<Type> = {
 
     this.tbody.append(...rowsHtmlElements);
   };
+
+  private initialize = (): void => {
+    this.initializeHead();
+    this.initializeBody();
+
+    this.htmlElement.className = 'table table-striped order border p-3';
+    this.htmlElement.append(
+      this.thead,
+      this.tbody,
+    );
+  };
 }
 export default Table;
