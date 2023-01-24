@@ -2,6 +2,8 @@ import CarsCollection from '../helpers/cars-collection';
 import cars from '../data/cars';
 import brands from '../data/brands';
 import models from '../data/models';
+import Table from './table';
+import stringifyProps from '../helpers/stingify-object';
 
 class App {
   private htmlElement: HTMLElement;
@@ -17,9 +19,24 @@ class App {
     this.htmlElement = foundElement;
   }
 
-  initialize() {
-    this.htmlElement.innerHTML = 'app turinys';
-  }
-}
+  initialize = (): void => {
+    const carTable = new Table({
+      title: 'Visi automobiliai',
+      columns: {
+        id: 'Id',
+        brand: 'Markė',
+        model: 'Modelis',
+        price: 'Kaina',
+        year: 'Metai',
+      },
+      rowsData: this.carsCollection.all.map(stringifyProps),
+    });
 
+    const container = document.createElement('div');
+    container.className = 'container my-5';
+    container.appendChild(carTable.htmlElement);
+
+    this.htmlElement.append(container);
+  };
+}
   export default App;
