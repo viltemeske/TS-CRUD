@@ -1,3 +1,5 @@
+import countObjectProperties from '../helpers/count-object-properties';
+
 type RowData = {
     id: string,
     [key: string]: string,
