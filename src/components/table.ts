@@ -1,35 +1,39 @@
 import countObjectProperties from '../helpers/count-object-properties';
 
 type RowData = {
-    id: string,
-    [key: string]: string,
-  };
+  id: string,
+  [key: string]: string,
+};
 
 export type TableProps<Type> = {
-    title: string,
-    columns: Type,
-    rowsData: Type[],
-  };
+  title: string,
+  columns: Type,
+  rowsData: Type[],
+  onDelete: (id: string) => void,
+};
 
-  class Table<Type extends RowData> {
-      public htmlElement: HTMLTableElement;
+class Table<Type extends RowData> {
+  public htmlElement: HTMLTableElement;
 
-      private props: TableProps<Type>;
+  private props: TableProps<Type>;
 
-      private tbody: HTMLTableSectionElement;
+  private tbody: HTMLTableSectionElement;
 
-      private thead: HTMLTableSectionElement;
+  private thead: HTMLTableSectionElement;
 
-      public constructor(props: TableProps<Type>) {
-        this.props = props;
-        this.checkColumnsCompatability();
+  public constructor(props: TableProps<Type>) {
+    this.props = props;
 
-        this.htmlElement = document.createElement('table');
-        this.thead = document.createElement('thead');
-        this.tbody = document.createElement('tbody');
+    this.checkColumnsCompatability();
 
-        this.initialize();
-        this.renderView();
+    this.htmlElement = document.createElement('table');
+
+    this.thead = document.createElement('thead');
+
+    this.tbody = document.createElement('tbody');
+
+    this.initialize();
+    this.renderView();
   }
 
   private checkColumnsCompatability = (): void => {
@@ -62,38 +66,46 @@ export type TableProps<Type> = {
     this.renderBody();
   };
 
-  private renderHead = (): void => {
-    const { title, columns } = this.props;
+  private renderHead = () => {
+    const thElementsString = Object.values(this.props.columns)
+      .map((columnName) => `<th>${columnName}</th>`)
+      .join('');
 
-    const headersArray = Object.values(columns);
-    const headersRowHtmlString = headersArray.map((header) => `<th>${header}</th>`).join('');
+    const columnCount = thElementsString.length;
 
     this.thead.innerHTML = `
-      <tr>
-        <th colspan="${headersArray.length}" class="text-center h3">${title}</th>
-      </tr>
-      <tr>${headersRowHtmlString}</tr>
-    `;
+    <tr class="text-center h3">
+    <th colspan="${columnCount}">${this.props.title}</th>
+  </tr>
+  <tr>
+    ${thElementsString}
+    <th></th>
+  </tr>
+`;
   };
 
-  private renderBody = (): void => {
-    const { rowsData, columns } = this.props;
-
+  private renderBody = () => {
     this.tbody.innerHTML = '';
-    const rowsHtmlElements = rowsData
+    const rows = this.props.rowsData
       .map((rowData) => {
-        const rowHtmlElement = document.createElement('tr');
+        const deleteButton = document.createElement('button');
+        deleteButton.className = 'btn btn-danger btn-sm';
+        deleteButton.innerText = '❌';
+        deleteButton.addEventListener('click', () => this.props.onDelete(rowData.id));
 
-        const cellsHtmlString = Object.keys(columns)
+        const td = document.createElement('td');
+        td.append(deleteButton);
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = Object.keys(this.props.columns)
           .map((key) => `<td>${rowData[key]}</td>`)
-          .join(' ');
+          .join('');
+        tr.append(td);
 
-        rowHtmlElement.innerHTML = cellsHtmlString;
-
-        return rowHtmlElement;
+        return tr;
       });
 
-    this.tbody.append(...rowsHtmlElements);
+    this.tbody.append(...rows);
   };
 
   public updateProps = (newProps: Partial<TableProps<Type>>): void => {
