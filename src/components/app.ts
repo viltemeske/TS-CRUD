@@ -1,11 +1,18 @@
-import CarsCollection from '../helpers/cars-collection';
+import Table from './table';
+
 import cars from '../data/cars';
 import brands from '../data/brands';
 import models from '../data/models';
-import CarJoined from '../types/car-joined';
-import Table from './table';
-import SelectField from './select-field';
+
+import CarsCollection from '../helpers/cars-collection';
 import stringifyProps, { StringifyObjectProps } from '../helpers/stingify-object';
+
+import SelectField from './select-field';
+
+import type CarJoined from '../types/car-joined';
+
+const ALL_CAR_TITLE = 'Visi automobiliai' as const;
+const ALL_BRAND_TITLE = 'Markė' as const;
 
 class App {
   private htmlElement: HTMLElement;
@@ -18,7 +25,7 @@ class App {
 
   private brandSelect: SelectField;
 
-  constructor(selector: string) {
+  public constructor(selector: string) {
     const foundElement = document.querySelector<HTMLElement>(selector);
     this.carsCollection = new CarsCollection({ cars, brands, models });
 
@@ -27,22 +34,26 @@ class App {
     this.htmlElement = foundElement;
     this.selectedBrandId = null;
     this.carTable = new Table({
-      title: 'Visi automobiliai',
+      title: ALL_CAR_TITLE,
       columns: {
         id: 'Id',
-        brand: 'Markė',
+        brand: ALL_BRAND_TITLE,
         model: 'Modelis',
         price: 'Kaina',
         year: 'Metai',
       },
       rowsData: this.carsCollection.all.map(stringifyProps),
+      onDelete: this.handleCarDelete,
     });
 
     this.brandSelect = new SelectField({
-      labelText: 'Markė',
+      labelText: ALL_BRAND_TITLE,
       options: brands.map(({ id, title }) => ({ title, value: id })),
       onChange: this.handleBrandChange,
     });
+    this.selectedBrandId = null;
+
+    this.htmlElement = foundElement;
 
     this.initialize();
   }
@@ -58,7 +69,7 @@ class App {
 
     if (selectedBrandId === null) {
       this.carTable.updateProps({
-        title: 'Visi automobiliai',
+        title: ALL_CAR_TITLE,
         rowsData: carsCollection.all.map(stringifyProps),
       });
     } else {
@@ -70,6 +81,12 @@ class App {
         rowsData: carsCollection.getByBrandId(selectedBrandId).map(stringifyProps),
       });
     }
+  };
+
+  private handleCarDelete = (carId: string): void => {
+    this.carsCollection.deleteCarById(carId);
+
+    this.update();
   };
 
   public initialize = (): void => {

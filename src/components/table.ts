@@ -90,7 +90,7 @@ class Table<Type extends RowData> {
       .map((rowData) => {
         const deleteButton = document.createElement('button');
         deleteButton.className = 'btn btn-danger btn-sm';
-        deleteButton.innerText = '❌';
+        deleteButton.innerText = 'Pašalinti';
         deleteButton.addEventListener('click', () => this.props.onDelete(rowData.id));
 
         const td = document.createElement('td');
