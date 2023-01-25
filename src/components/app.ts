@@ -2,14 +2,19 @@ import CarsCollection from '../helpers/cars-collection';
 import cars from '../data/cars';
 import brands from '../data/brands';
 import models from '../data/models';
+import CarJoined from '../types/car-joined';
 import Table from './table';
-import stringifyProps from '../helpers/stingify-object';
 import SelectField from './select-field';
+import stringifyProps, { StringifyObjectProps } from '../helpers/stingify-object';
 
 class App {
   private htmlElement: HTMLElement;
 
   private carsCollection: CarsCollection;
+
+  private selectedBrandId: null | string;
+
+  private carTable: Table<StringifyObjectProps<CarJoined>>;
 
   private brandSelect: SelectField;
 
@@ -20,15 +25,8 @@ class App {
     if (foundElement === null) throw new Error(`Nerastas elementas su selektoriumi '${selector}'`);
 
     this.htmlElement = foundElement;
-
-    this.brandSelect = new SelectField({
-      labelText: 'Markė',
-      options: brands.map(({ id, title }) => ({ title, value: id })),
-    });
-  }
-
-  initialize = (): void => {
-    const carTable = new Table({
+    this.selectedBrandId = null;
+    this.carTable = new Table({
       title: 'Visi automobiliai',
       columns: {
         id: 'Id',
@@ -40,14 +38,50 @@ class App {
       rowsData: this.carsCollection.all.map(stringifyProps),
     });
 
+    this.brandSelect = new SelectField({
+      labelText: 'Markė',
+      options: brands.map(({ id, title }) => ({ title, value: id })),
+      onChange: this.handleBrandChange,
+    });
+
+    this.initialize();
+  }
+
+  private handleBrandChange = (brandId: string): void => {
+    this.selectedBrandId = brandId;
+
+    this.update();
+  };
+
+  private update = (): void => {
+    const { selectedBrandId, carsCollection } = this;
+
+    if (selectedBrandId === null) {
+      this.carTable.updateProps({
+        title: 'Visi automobiliai',
+        rowsData: carsCollection.all.map(stringifyProps),
+      });
+    } else {
+      const brand = brands.find((carBrand) => carBrand.id === selectedBrandId);
+      if (brand === undefined) throw new Error('Pasirinkta neegzistuojanti markė');
+
+      this.carTable.updateProps({
+        title: `${brand.title} markės automobiliai`,
+        rowsData: carsCollection.getByBrandId(selectedBrandId).map(stringifyProps),
+      });
+    }
+  };
+
+  public initialize = (): void => {
     const container = document.createElement('div');
-    container.className = 'container container my-4 d-flex  flex-column gap-3';
+    container.className = 'container my-4 d-flex  flex-column gap-3';
     container.append(
       this.brandSelect.htmlElement,
-      carTable.htmlElement,
-);
+      this.carTable.htmlElement,
+    );
 
     this.htmlElement.append(container);
   };
 }
-  export default App;
+
+export default App;

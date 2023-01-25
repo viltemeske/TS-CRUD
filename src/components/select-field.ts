@@ -1,33 +1,74 @@
-type Option = {
-    title: string,
-    value: string,
-  };
+type OptionType = {
+  title: string,
+  value: string,
+};
 
-  export type SelectFieldProps = {
-    labelText: string,
-    options: Option[],
-  };
+export type SelectFieldProps = {
+  labelText: string,
+  onChange: (newValue: string) => void,
+  options: OptionType[],
+};
 
-  class SelectField {
-    public htmlElement: HTMLElement;
+class SelectField {
+  private static UNIQ_ID = 0 as const;
 
-    private options: SelectFieldProps['options'];
+  private props: SelectFieldProps;
 
-    public constructor({ options }: SelectFieldProps) {
-      this.htmlElement = document.createElement('select');
-      this.options = options;
+  private htmlSelectElement: HTMLSelectElement;
 
-      this.initialize();
-    }
+  private htmlLabelElement: HTMLLabelElement;
 
-    private initialize() {
-      const optionsString = this.options
-        .map(({ title, value }) => `<option value="${value}">${title}</option>`)
-        .join('');
+  public htmlElement: HTMLDivElement;
 
-      this.htmlElement.className = 'form-select';
-      this.htmlElement.innerHTML = optionsString;
-    }
+  constructor(props: SelectFieldProps) {
+    this.props = props;
+
+    SelectField.UNIQ_ID += 1;
+    this.htmlElement = document.createElement('div');
+    this.htmlSelectElement = document.createElement('select');
+    this.htmlLabelElement = document.createElement('label');
+
+    this.initialize();
+    this.renderView();
   }
 
-  export default SelectField;
+  private initialize = (): void => {
+    const elementId = `select-${SelectField.UNIQ_ID}`;
+
+    this.htmlLabelElement.setAttribute('for', elementId);
+
+    this.htmlSelectElement.className = 'form-select';
+    this.htmlSelectElement.id = elementId;
+
+    this.htmlElement.className = 'form-group';
+    this.htmlElement.append(
+      this.htmlLabelElement,
+      this.htmlSelectElement,
+    );
+  };
+
+  private renderView = (): void => {
+    const { labelText, onChange } = this.props;
+
+    this.htmlLabelElement.innerHTML = labelText;
+    this.htmlSelectElement.addEventListener('change', () => onChange(this.htmlSelectElement.value));
+    this.renderSelectOptions();
+  };
+
+  private renderSelectOptions = (): void => {
+    const { options } = this.props;
+
+    const optionsHtmlElements = options.map((option) => {
+      const element = document.createElement('option');
+      element.innerHTML = option.title;
+      element.value = option.value;
+
+      return element;
+    });
+
+    this.htmlSelectElement.innerHTML = '';
+    this.htmlSelectElement.append(...optionsHtmlElements);
+  };
+}
+
+export default SelectField;

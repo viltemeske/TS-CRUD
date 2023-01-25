@@ -36,14 +36,12 @@ class CarsCollection {
         const { cars, models } = this.props;
 
         const brandModelsIds = models
-          .filter((model) => model.brandId === brandId)
-          .map((model) => model.id);
+        .filter((model) => model.brandId === brandId)
+        .map((model) => model.id);
+      return cars
+        .filter((car) => brandModelsIds.includes(car.modelId))
+        .map(this.joinCar);
+    };
+  }
 
-        const brandCars = cars
-          .filter((car) => brandModelsIds.includes(car.modelId))
-          .map(this.joinCar);
-
-        return brandCars;
-      };
-}
 export default CarsCollection;
