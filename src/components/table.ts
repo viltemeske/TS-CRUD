@@ -29,6 +29,7 @@ export type TableProps<Type> = {
         this.tbody = document.createElement('tbody');
 
         this.initialize();
+        this.renderView();
   }
 
   private checkColumnsCompatability = (): void => {
@@ -48,7 +49,20 @@ export type TableProps<Type> = {
     }
   };
 
-  private initializeHead = (): void => {
+  private initialize = (): void => {
+    this.htmlElement.className = 'table table-striped order border p-3';
+    this.htmlElement.append(
+      this.thead,
+      this.tbody,
+    );
+  };
+
+  private renderView = (): void => {
+    this.renderHead();
+    this.renderBody();
+  };
+
+  private renderHead = (): void => {
     const { title, columns } = this.props;
 
     const headersArray = Object.values(columns);
@@ -62,7 +76,7 @@ export type TableProps<Type> = {
     `;
   };
 
-  private initializeBody = (): void => {
+  private renderBody = (): void => {
     const { rowsData, columns } = this.props;
 
     this.tbody.innerHTML = '';
@@ -82,15 +96,13 @@ export type TableProps<Type> = {
     this.tbody.append(...rowsHtmlElements);
   };
 
-  private initialize = (): void => {
-    this.initializeHead();
-    this.initializeBody();
+  public updateProps = (newProps: Partial<TableProps<Type>>): void => {
+    this.props = {
+      ...this.props,
+      ...newProps,
+    };
 
-    this.htmlElement.className = 'table table-striped order border p-3';
-    this.htmlElement.append(
-      this.thead,
-      this.tbody,
-    );
+    this.renderView();
   };
 }
 export default Table;
