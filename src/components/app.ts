@@ -4,11 +4,14 @@ import brands from '../data/brands';
 import models from '../data/models';
 import Table from './table';
 import stringifyProps from '../helpers/stingify-object';
+import SelectField from './select-field';
 
 class App {
   private htmlElement: HTMLElement;
 
   private carsCollection: CarsCollection;
+
+  private brandSelect: SelectField;
 
   constructor(selector: string) {
     const foundElement = document.querySelector<HTMLElement>(selector);
@@ -17,6 +20,11 @@ class App {
     if (foundElement === null) throw new Error(`Nerastas elementas su selektoriumi '${selector}'`);
 
     this.htmlElement = foundElement;
+
+    this.brandSelect = new SelectField({
+      labelText: 'Markė',
+      options: brands.map(({ id, title }) => ({ title, value: id })),
+    });
   }
 
   initialize = (): void => {
@@ -33,8 +41,11 @@ class App {
     });
 
     const container = document.createElement('div');
-    container.className = 'container my-5';
-    container.appendChild(carTable.htmlElement);
+    container.className = 'container container my-4 d-flex  flex-column gap-3';
+    container.append(
+      this.brandSelect.htmlElement,
+      carTable.htmlElement,
+);
 
     this.htmlElement.append(container);
   };
