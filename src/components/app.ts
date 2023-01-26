@@ -2,11 +2,11 @@ import Table from './table';
 import cars from '../data/cars';
 import brands from '../data/brands';
 import models from '../data/models';
-import CarsCollection from '../helpers/cars-collection';
+import CarsCollection, { CarProps } from '../helpers/cars-collection';
 import stringifyProps, { StringifyObjectProps } from '../helpers/stingify-object';
 import SelectField from './select-field';
 import type CarJoined from '../types/car-joined';
-import CarForm from './car-form';
+import CarForm, { Values } from './car-form';
 
 const ALL_CAR_TITLE = 'Visi automobiliai' as const;
 const ALL_BRAND_TITLE = 'Markė' as const;
@@ -19,6 +19,8 @@ class App {
   private selectedBrandId: null | string;
 
   private carTable: Table<StringifyObjectProps<CarJoined>>;
+
+  private carForm: CarForm;
 
   private brandSelect: SelectField;
 
@@ -51,25 +53,47 @@ class App {
 
     const initialBrandId = brands[0].id;
     this.carForm = new CarForm({
-      title: 'Sukurkite naują automobilį',
+      title: 'Sukurti naują automobilį',
       submitBtnText: 'Sukurti',
       values: {
         brand: initialBrandId,
         model: models.filter((m) => m.brandId === initialBrandId)[0].id,
         price: '0',
-        year: '2000',
+        year: '0000',
       },
-      onSubmit: () => {},
+      onSubmit: this.handleCreateCar,
     });
   }
 
-  private handleBrandChange = (brandId: string): void => {
-    this.selectedBrandId = brandId;
+  private handleBrandChange = (brandId: string) => {
+    const brand = brands.find((b) => b.id === brandId);
+    this.selectedBrandId = brand ? brandId : null;
 
-    this.update();
+    this.renderView();
   };
 
-  private update = (): void => {
+  private handleCarDelete = (carId: string): void => {
+    this.carsCollection.deleteCarById(carId);
+
+    this.renderView();
+  };
+
+  private handleCreateCar = ({
+    brand, model, price, year,
+  }: Values): void => {
+    const carProps: CarProps = {
+      brandId: brand,
+      modelId: model,
+      price: Number(price),
+      year: Number(year),
+    };
+
+    this.carsCollection.add(carProps);
+
+    this.renderView();
+  };
+
+  private renderView = (): void => {
     const { selectedBrandId, carsCollection } = this;
 
     if (selectedBrandId === null) {
@@ -86,12 +110,6 @@ class App {
         rowsData: carsCollection.getByBrandId(selectedBrandId).map(stringifyProps),
       });
     }
-  };
-
-  private handleCarDelete = (carId: string): void => {
-    this.carsCollection.deleteCarById(carId);
-
-    this.update();
   };
 
   public initialize = (): void => {

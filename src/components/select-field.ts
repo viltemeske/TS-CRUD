@@ -49,7 +49,7 @@ class SelectField {
     );
   };
 
-    private renderView = (): void => {
+  private renderView = (): void => {
     const { labelText, onChange, name } = this.props;
 
     this.htmlLabelElement.innerHTML = labelText;
