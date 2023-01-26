@@ -97,7 +97,8 @@ type Fields = {
             const year = formData.get('year') as string | null;
 
             if (!(brand && price && model && year)) {
-              alert('blogi formos duomenys');
+              // eslint-disable-next-line no-alert
+              alert('neteisingi formos duomenys');
               return;
             }
 

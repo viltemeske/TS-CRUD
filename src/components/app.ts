@@ -6,6 +6,7 @@ import CarsCollection from '../helpers/cars-collection';
 import stringifyProps, { StringifyObjectProps } from '../helpers/stingify-object';
 import SelectField from './select-field';
 import type CarJoined from '../types/car-joined';
+import CarForm from './car-form';
 
 const ALL_CAR_TITLE = 'Visi automobiliai' as const;
 const ALL_BRAND_TITLE = 'Markė' as const;
@@ -47,11 +48,19 @@ class App {
       options: brands.map(({ id, title }) => ({ title, value: id })),
       onChange: this.handleBrandChange,
     });
-    this.selectedBrandId = null;
 
-    this.htmlElement = foundElement;
-
-    this.initialize();
+    const initialBrandId = brands[0].id;
+    this.carForm = new CarForm({
+      title: 'Sukurkite naują automobilį',
+      submitBtnText: 'Sukurti',
+      values: {
+        brand: initialBrandId,
+        model: models.filter((m) => m.brandId === initialBrandId)[0].id,
+        price: '0',
+        year: '2000',
+      },
+      onSubmit: () => {},
+    });
   }
 
   private handleBrandChange = (brandId: string): void => {
@@ -86,11 +95,18 @@ class App {
   };
 
   public initialize = (): void => {
+    const uxContainer = document.createElement('div');
+    uxContainer.className = 'd-flex gap-4 align-items-start';
+    uxContainer.append(
+      this.carTable.htmlElement,
+      this.carForm.htmlElement,
+    );
+
     const container = document.createElement('div');
-    container.className = 'container my-4 d-flex  flex-column gap-3';
+    container.className = 'container my-4 d-flex flex-column gap-4';
     container.append(
       this.brandSelect.htmlElement,
-      this.carTable.htmlElement,
+      uxContainer,
     );
 
     this.htmlElement.append(container);
