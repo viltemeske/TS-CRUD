@@ -1,14 +1,10 @@
 import Table from './table';
-
 import cars from '../data/cars';
 import brands from '../data/brands';
 import models from '../data/models';
-
 import CarsCollection from '../helpers/cars-collection';
 import stringifyProps, { StringifyObjectProps } from '../helpers/stingify-object';
-
 import SelectField from './select-field';
-
 import type CarJoined from '../types/car-joined';
 
 const ALL_CAR_TITLE = 'Visi automobiliai' as const;
