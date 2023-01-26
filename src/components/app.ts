@@ -35,7 +35,6 @@ class App {
     this.carTable = new Table({
       title: ALL_CAR_TITLE,
       columns: {
-        id: 'Id',
         brand: ALL_BRAND_TITLE,
         model: 'Modelis',
         price: 'Kaina',

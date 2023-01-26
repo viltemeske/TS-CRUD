@@ -7,7 +7,7 @@ type RowData = {
 
 export type TableProps<Type> = {
   title: string,
-  columns: Type,
+  columns: Omit<Type, 'id'>,
   rowsData: Type[],
   onDelete: (id: string) => void,
 };
@@ -40,7 +40,7 @@ class Table<Type extends RowData> {
     const { rowsData, columns } = this.props;
 
     if (this.props.rowsData.length === 0) return;
-    const columnCount = countObjectProperties(columns);
+    const columnCount = countObjectProperties(columns) + 1;
 
     const columnsCompatableWithRowsData = rowsData.every((row) => {
       const rowCellsCount = countObjectProperties(row);
