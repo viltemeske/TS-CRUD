@@ -22,14 +22,15 @@ class TextField {
     public constructor(props: TextFieldProps) {
         TextField.instanceCounter += 1;
         this.props = props;
-    
+
         this.htmlElement = document.createElement('div');
         this.htmlLabelElement = document.createElement('label');
         this.htmlInputElement = document.createElement('input');
-    
+
         this.initialize();
         this.renderView();
 }
+
 private initialize = (): void => {
     const inputId = `input-${TextField.id}`;
 
@@ -45,6 +46,7 @@ private initialize = (): void => {
       this.htmlInputElement,
     );
   };
+
   private renderView = (): void => {
     const { name, labelText, value } = this.props;
 
