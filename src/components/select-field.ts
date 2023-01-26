@@ -77,6 +77,15 @@ class SelectField {
     this.htmlSelectElement.innerHTML = '';
     this.htmlSelectElement.append(...optionsHtmlElements);
   };
+
+  public updateProps = (newProps: Partial<SelectFieldProps>): void => {
+    this.props = {
+      ...this.props,
+      ...newProps,
+    };
+
+    this.renderView();
+  };
 }
 
 export default SelectField;
