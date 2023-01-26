@@ -8,6 +8,7 @@ import SelectField from './select-field';
 import type CarJoined from '../types/car-joined';
 import CarForm, { Values } from './car-form';
 
+const ALL_BRAND_ID = '-1' as const;
 const ALL_CAR_TITLE = 'Visi automobiliai' as const;
 const ALL_BRAND_TITLE = 'Markė' as const;
 
@@ -46,7 +47,10 @@ class App {
 
     this.brandSelect = new SelectField({
       labelText: ALL_BRAND_TITLE,
-      options: brands.map(({ id, title }) => ({ title, value: id })),
+      options: [
+        { title: ALL_CAR_TITLE, value: ALL_BRAND_ID },
+        ...brands.map(({ id, title }) => ({ title, value: id })),
+      ],
       onChange: this.handleBrandChange,
     });
 
