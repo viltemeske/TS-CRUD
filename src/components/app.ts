@@ -6,7 +6,6 @@ import CarsCollection from '../helpers/cars-collection';
 import stringifyProps, { StringifyObjectProps } from '../helpers/stingify-object';
 import SelectField from './select-field';
 import type CarJoined from '../types/car-joined';
-import TextField from './text-field';
 
 const ALL_CAR_TITLE = 'Visi automobiliai' as const;
 const ALL_BRAND_TITLE = 'Markė' as const;
@@ -94,13 +93,7 @@ class App {
       this.carTable.htmlElement,
     );
 
-    const testTextField = new TextField({
-      labelText: 'name',
-      name: '123abc',
-      value: 'initial value',
-    });
-
-    this.htmlElement.append(container, testTextField.htmlElement);
+    this.htmlElement.append(container);
   };
 }
 
