@@ -57,13 +57,13 @@ class App {
     const initialBrandId = brands[0].id;
     this.carForm = new CarForm({
       title: 'Sukurti naują automobilį',
-      submitBtnText: 'Sukurti',
       values: {
         brand: initialBrandId,
         model: models.filter((m) => m.brandId === initialBrandId)[0].id,
         price: '0',
         year: '0000',
       },
+      submitBtnText: 'Sukurti',
       onSubmit: this.handleCreateCar,
     });
   }

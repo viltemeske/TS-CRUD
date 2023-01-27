@@ -19,6 +19,10 @@ module.exports = {
         // Actions:
         loader: "ts-loader",
       },
+      {
+        test: /\.css$/i,
+        use: ['style-loader', 'css-loader'],
+      },
     ],
   },
 
