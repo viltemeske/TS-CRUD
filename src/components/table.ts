@@ -93,8 +93,16 @@ class Table<Type extends RowData> {
         deleteButton.innerText = 'Pašalinti';
         deleteButton.addEventListener('click', () => this.props.onDelete(rowData.id));
 
+        const updateButton = document.createElement('button');
+        updateButton.className = 'btn btn-warning btn-sm';
+        updateButton.innerText = 'Redaguoti';
+
+        const btnContainer = document.createElement('div');
+        btnContainer.className = 'd-flex gap-2 justify-content-end';
+        btnContainer.append(updateButton, deleteButton);
+
         const td = document.createElement('td');
-        td.append(deleteButton);
+        td.append(btnContainer);
 
         const tr = document.createElement('tr');
         tr.innerHTML = Object.keys(this.props.columns)
