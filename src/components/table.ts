@@ -9,7 +9,9 @@ export type TableProps<Type> = {
   title: string,
   columns: Omit<Type, 'id'>,
   rowsData: Type[],
+  editedBrandId: string | null,
   onDelete: (id: string) => void,
+  onEdit: (id: string) => void,
 };
 
 class Table<Type extends RowData> {
@@ -88,23 +90,30 @@ class Table<Type extends RowData> {
     this.tbody.innerHTML = '';
     const rows = this.props.rowsData
       .map((rowData) => {
+        const thisRowIsEdited = this.props.editedBrandId === rowData.id;
+
         const deleteButton = document.createElement('button');
-        deleteButton.className = 'btn btn-danger btn-sm';
+        deleteButton.className = 'btn btn-danger btn-sm btn-action';
         deleteButton.innerText = 'Pašalinti';
         deleteButton.addEventListener('click', () => this.props.onDelete(rowData.id));
 
         const updateButton = document.createElement('button');
-        updateButton.className = 'btn btn-warning btn-sm';
-        updateButton.innerText = 'Redaguoti';
+        updateButton.className = `btn btn-${thisRowIsEdited ? 'secondary' : 'warning'} btn-sm btn-action`;
+        updateButton.innerText = thisRowIsEdited ? 'Atšaukti' : 'Redaguoti';
+        updateButton.addEventListener('click', () => this.props.onEdit(rowData.id));
 
         const btnContainer = document.createElement('div');
         btnContainer.className = 'd-flex gap-2 justify-content-end';
         btnContainer.append(updateButton, deleteButton);
+        btnContainer.addEventListener('click', () => {
+          tr.classList.add('row-active');
+        });
 
         const td = document.createElement('td');
         td.append(btnContainer);
 
         const tr = document.createElement('tr');
+        if (this.props.editedBrandId === rowData.id) tr.classList.add('row-active');
         tr.innerHTML = Object.keys(this.props.columns)
           .map((key) => `<td>${rowData[key]}</td>`)
           .join('');

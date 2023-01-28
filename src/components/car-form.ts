@@ -97,6 +97,7 @@ class CarForm {
         const year = formData.get('year') as string | null;
 
         if (!(brand && price && model && year)) {
+            // eslint-disable-next-line no-alert
             alert('Formoje trūksta duomenų');
             return;
         }

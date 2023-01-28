@@ -1,4 +1,4 @@
-import css from 'file.css';
+import './main.css';
 import App from './components/app';
 
 const app = new App('#root');

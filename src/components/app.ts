@@ -15,6 +15,8 @@ const ALL_BRAND_TITLE = 'Markė' as const;
 class App {
   private htmlElement: HTMLElement;
 
+  private editedBrandId: string | null;
+
   private carsCollection: CarsCollection;
 
   private selectedBrandId: null | string;
@@ -31,8 +33,9 @@ class App {
 
     if (foundElement === null) throw new Error(`Nerastas elementas su selektoriumi '${selector}'`);
 
-    this.htmlElement = foundElement;
     this.selectedBrandId = null;
+    this.editedBrandId = null;
+    this.htmlElement = foundElement;
     this.carTable = new Table({
       title: ALL_CAR_TITLE,
       columns: {
@@ -43,6 +46,8 @@ class App {
       },
       rowsData: this.carsCollection.all.map(stringifyProps),
       onDelete: this.handleCarDelete,
+      onEdit: this.handleCarEdit,
+      editedBrandId: this.editedBrandId,
     });
 
     this.brandSelect = new SelectField({
@@ -72,13 +77,19 @@ class App {
     const brand = brands.find((b) => b.id === brandId);
     this.selectedBrandId = brand ? brandId : null;
 
-    this.renderView();
+    this.update();
   };
 
   private handleCarDelete = (carId: string): void => {
     this.carsCollection.deleteCarById(carId);
 
-    this.renderView();
+    this.update();
+  };
+
+  private handleCarEdit = (brandId: string): void => {
+    this.editedBrandId = brandId === this.editedBrandId ? null : brandId;
+
+    this.update();
   };
 
   private handleCreateCar = ({
@@ -93,16 +104,17 @@ class App {
 
     this.carsCollection.add(carProps);
 
-    this.renderView();
+    this.update();
   };
 
-  private renderView = (): void => {
+  private update = (): void => {
     const { selectedBrandId, carsCollection } = this;
 
     if (selectedBrandId === null) {
       this.carTable.updateProps({
         title: ALL_CAR_TITLE,
         rowsData: carsCollection.all.map(stringifyProps),
+        editedBrandId: this.editedBrandId,
       });
     } else {
       const brand = brands.find((carBrand) => carBrand.id === selectedBrandId);
@@ -111,6 +123,7 @@ class App {
       this.carTable.updateProps({
         title: `${brand.title} markės automobiliai`,
         rowsData: carsCollection.getByBrandId(selectedBrandId).map(stringifyProps),
+        editedBrandId: this.editedBrandId,
       });
     }
   };
