@@ -70,6 +70,7 @@ class App {
       },
       submitBtnText: 'Sukurti',
       onSubmit: this.handleCreateCar,
+      status: 'create',
     });
   }
 
@@ -124,6 +125,19 @@ class App {
         title: `${brand.title} markės automobiliai`,
         rowsData: carsCollection.getByBrandId(selectedBrandId).map(stringifyProps),
         editedBrandId: this.editedBrandId,
+      });
+    }
+    if (this.editedBrandId === null) {
+      this.carForm.updateProps({
+        title: 'Sukurti naują automobilį',
+        submitBtnText: 'Sukurti',
+        status: 'create',
+      });
+    } else {
+      this.carForm.updateProps({
+        title: 'Automobilio redagavimas',
+        submitBtnText: 'Atnaujinti',
+        status: 'update',
       });
     }
   };

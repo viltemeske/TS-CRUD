@@ -15,6 +15,7 @@ type CarFormProps = {
     title: string,
     submitBtnText: string,
     onSubmit: (values: Values) => void,
+    status: 'create' | 'update',
 };
 
 type Fields = {
@@ -74,9 +75,10 @@ class CarForm {
         this.htmlFieldsContainer.className = 'd-flex flex-column gap-2';
         this.htmlFieldsContainer.append(...fieldsGroup.map((field) => field.htmlElement));
 
-        this.htmlSubmitBtn.className = 'btn btn-primary btn-sm';
+        this.htmlSubmitBtn.className = 'btn btn-sm';
 
-        this.htmlElement.className = 'card d-flex flex-column gap-3 p-3';
+        this.htmlElement.className = 'card d-flex flex-column gap-3 p-3 shadow';
+        this.htmlElement.style.width = '360px';
         this.htmlElement.append(
             this.htmlFormHeader,
             this.htmlFieldsContainer,
@@ -112,12 +114,27 @@ class CarForm {
         onSubmit(formValues);
     };
 
+    private renderStatusStyles = () => {
+        if (this.props.status === 'create') {
+            this.htmlFormHeader.classList.remove('text-warning');
+            this.htmlSubmitBtn.classList.remove('btn-warning');
+
+            this.htmlFormHeader.classList.add('text-primary');
+            this.htmlSubmitBtn.classList.add('btn-primary');
+        } else {
+            this.htmlFormHeader.classList.remove('text-primary');
+            this.htmlSubmitBtn.classList.remove('btn-primary');
+
+            this.htmlFormHeader.classList.add('text-warning');
+            this.htmlSubmitBtn.classList.add('btn-warning');
+        }
+    };
+
     private renderView = (): void => {
         const { title, values, submitBtnText } = this.props;
-
         this.htmlFormHeader.innerHTML = title;
-
         this.htmlSubmitBtn.innerHTML = submitBtnText;
+        this.renderStatusStyles();
 
         const valuesKeyValueArr = Object.entries(values) as [keyof Values, string][];
         valuesKeyValueArr.forEach(([fieldName, fieldValue]) => {
