@@ -77,8 +77,7 @@ class CarForm {
 
         this.htmlSubmitBtn.className = 'btn btn-sm';
 
-        this.htmlElement.className = 'card d-flex flex-column gap-3 p-3 shadow';
-        this.htmlElement.style.width = '360px';
+        this.htmlElement.className = 'card d-flex flex-column gap-3 p-3 shadow style-form-width';
         this.htmlElement.append(
             this.htmlFormHeader,
             this.htmlFieldsContainer,
@@ -99,7 +98,6 @@ class CarForm {
         const year = formData.get('year') as string | null;
 
         if (!(brand && price && model && year)) {
-            // eslint-disable-next-line no-alert
             alert('Formoje trūksta duomenų');
             return;
         }

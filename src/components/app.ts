@@ -11,11 +11,12 @@ import CarForm, { Values } from './car-form';
 const ALL_BRAND_ID = '-1' as const;
 const ALL_CAR_TITLE = 'Visi automobiliai' as const;
 const ALL_BRAND_TITLE = 'Markė' as const;
+const initialBrandId = brands[0].id;
 
 class App {
   private htmlElement: HTMLElement;
 
-  private editedBrandId: string | null;
+  private editedCarId: string | null;
 
   private carsCollection: CarsCollection;
 
@@ -34,7 +35,7 @@ class App {
     if (foundElement === null) throw new Error(`Nerastas elementas su selektoriumi '${selector}'`);
 
     this.selectedBrandId = null;
-    this.editedBrandId = null;
+    this.editedCarId = null;
     this.htmlElement = foundElement;
     this.carTable = new Table({
       title: ALL_CAR_TITLE,
@@ -47,7 +48,7 @@ class App {
       rowsData: this.carsCollection.all.map(stringifyProps),
       onDelete: this.handleCarDelete,
       onEdit: this.handleCarEdit,
-      editedBrandId: this.editedBrandId,
+      editedCarId: this.editedCarId,
     });
 
     this.brandSelect = new SelectField({
@@ -59,7 +60,6 @@ class App {
       onChange: this.handleBrandChange,
     });
 
-    const initialBrandId = brands[0].id;
     this.carForm = new CarForm({
       title: 'Sukurti naują automobilį',
       values: {
@@ -77,18 +77,20 @@ class App {
   private handleBrandChange = (brandId: string) => {
     const brand = brands.find((b) => b.id === brandId);
     this.selectedBrandId = brand ? brandId : null;
+    this.editedCarId = null;
 
     this.update();
   };
 
   private handleCarDelete = (carId: string): void => {
     this.carsCollection.deleteCarById(carId);
+    this.editedCarId = null;
 
     this.update();
   };
 
   private handleCarEdit = (brandId: string): void => {
-    this.editedBrandId = brandId === this.editedBrandId ? null : brandId;
+    this.editedCarId = brandId === this.editedCarId ? null : brandId;
 
     this.update();
   };
@@ -108,36 +110,80 @@ class App {
     this.update();
   };
 
+  private handleCarUpdate = ({
+    brand, model, price, year,
+  }: Values): void => {
+    if (this.editedCarId) {
+      const carProps: CarProps = {
+        brandId: brand,
+        modelId: model,
+        price: Number(price),
+        year: Number(year),
+      };
+
+      this.carsCollection.carUpdate(this.editedCarId, carProps);
+      this.editedCarId = null;
+      this.update();
+    }
+  };
+
   private update = (): void => {
-    const { selectedBrandId, carsCollection } = this;
+    const { selectedBrandId, carsCollection, editedCarId } = this;
 
     if (selectedBrandId === null) {
       this.carTable.updateProps({
         title: ALL_CAR_TITLE,
         rowsData: carsCollection.all.map(stringifyProps),
-        editedBrandId: this.editedBrandId,
+        editedCarId,
       });
     } else {
-      const brand = brands.find((carBrand) => carBrand.id === selectedBrandId);
+      const brand = brands.find((newBrand) => newBrand.id === selectedBrandId);
       if (brand === undefined) throw new Error('Pasirinkta neegzistuojanti markė');
 
       this.carTable.updateProps({
         title: `${brand.title} markės automobiliai`,
         rowsData: carsCollection.getByBrandId(selectedBrandId).map(stringifyProps),
-        editedBrandId: this.editedBrandId,
+        editedCarId,
       });
     }
-    if (this.editedBrandId === null) {
+    if (editedCarId) {
+      const editedCar = cars.find((newCar) => newCar.id === editedCarId);
+      if (!editedCar) {
+        alert(`Klaida! nėra tokios mašinos ${editedCarId}`);
+        return;
+      }
+
+      const model = models.find((newModel) => newModel.id === editedCar.modelId);
+
+      if (!model) {
+        alert(`Klaida! nėra tokios mašinos su ${model}`);
+        return;
+      }
+
       this.carForm.updateProps({
-        title: 'Sukurti naują automobilį',
-        submitBtnText: 'Sukurti',
-        status: 'create',
+        title: 'Redaguoti automobilį',
+        submitBtnText: 'Redaguoti',
+        values: {
+          brand: model.brandId,
+          model: model.id,
+          price: String(editedCar.price),
+          year: String(editedCar.year),
+        },
+        status: 'update',
+        onSubmit: this.handleCarUpdate,
       });
     } else {
       this.carForm.updateProps({
-        title: 'Automobilio redagavimas',
-        submitBtnText: 'Atnaujinti',
-        status: 'update',
+        title: 'Sukurti naują automobilį',
+        submitBtnText: 'Sukurti',
+        values: {
+          brand: initialBrandId,
+          model: models.filter((m) => m.brandId === initialBrandId)[0].id,
+          price: '0',
+          year: '0000',
+        },
+        status: 'create',
+        onSubmit: this.handleCreateCar,
       });
     }
   };

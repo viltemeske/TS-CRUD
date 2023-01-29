@@ -15,6 +15,7 @@ export type CarProps = {
   price: number,
   year: number
 };
+export type CreateCarProps = Omit<Car, 'id'> & { brandId: string };
 
 const createId = (): string => String(Math.floor(Math.random() * 100000000000000));
 
@@ -72,6 +73,31 @@ class CarsCollection {
     };
 
     cars.push(newCar);
+  };
+
+  public carUpdate = (carId: string, { brandId, modelId, ...carProps }: CreateCarProps) => {
+    const updatedCarIndex = this.props.cars.findIndex((car) => car.id === carId);
+    if (updatedCarIndex === -1) {
+      throw new Error(`Automobilis su id: "${carId}" buvo nerastas`);
+    }
+
+    const model = this.props.models.find((models) => models.id === modelId);
+    if (!model) {
+      throw new Error(`Automobilis su id: "${modelId}" buvo nerastas`);
+    }
+
+    const brand = this.props.brands.find((brands) => brands.id === brandId);
+    if (!brand) {
+      throw new Error(`Automobilis su id: "${modelId}" buvo nerastas`);
+    }
+
+    const updateCar: Car = {
+      ...this.props.cars[updatedCarIndex],
+      ...carProps,
+      modelId,
+    };
+
+    this.props.cars.splice(updatedCarIndex, 1, updateCar);
   };
 }
 

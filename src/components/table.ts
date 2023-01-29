@@ -9,7 +9,7 @@ export type TableProps<Type> = {
   title: string,
   columns: Omit<Type, 'id'>,
   rowsData: Type[],
-  editedBrandId: string | null,
+  editedCarId: string | null,
   onDelete: (id: string) => void,
   onEdit: (id: string) => void,
 };
@@ -90,12 +90,14 @@ class Table<Type extends RowData> {
     this.tbody.innerHTML = '';
     const rows = this.props.rowsData
       .map((rowData) => {
-        const thisRowIsEdited = this.props.editedBrandId === rowData.id;
+        const thisRowIsEdited = this.props.editedCarId === rowData.id;
 
         const deleteButton = document.createElement('button');
         deleteButton.className = 'btn btn-danger btn-sm btn-action';
         deleteButton.innerText = 'Pašalinti';
         deleteButton.addEventListener('click', () => this.props.onDelete(rowData.id));
+
+        if (this.props.editedCarId !== null) deleteButton.setAttribute('disabled', 'true');
 
         const updateButton = document.createElement('button');
         updateButton.className = `btn btn-${thisRowIsEdited ? 'secondary' : 'warning'} btn-sm btn-action`;
@@ -113,7 +115,7 @@ class Table<Type extends RowData> {
         td.append(btnContainer);
 
         const tr = document.createElement('tr');
-        if (this.props.editedBrandId === rowData.id) tr.classList.add('row-active');
+        if (this.props.editedCarId === rowData.id) tr.classList.add('row-active');
         tr.innerHTML = Object.keys(this.props.columns)
           .map((key) => `<td>${rowData[key]}</td>`)
           .join('');
