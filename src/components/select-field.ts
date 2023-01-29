@@ -39,7 +39,7 @@ class SelectField {
 
     this.htmlLabelElement.setAttribute('for', elementId);
 
-    this.htmlSelectElement.className = 'form-select';
+    this.htmlSelectElement.className = 'form-select shadow';
     this.htmlSelectElement.id = elementId;
 
     this.htmlElement.className = 'form-group';

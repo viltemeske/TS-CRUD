@@ -38,7 +38,7 @@ private initialize = (): void => {
     this.htmlLabelElement.className = 'form-label';
 
     this.htmlInputElement.id = inputId;
-    this.htmlInputElement.className = 'form-control';
+    this.htmlInputElement.className = 'form-control shadow';
     this.htmlInputElement.type = 'text';
 
     this.htmlElement.append(

@@ -1,12 +1,12 @@
 import Table from './table';
-import cars from '../data/cars';
 import brands from '../data/brands';
 import models from '../data/models';
+import cars from '../data/cars';
 import CarsCollection, { CarProps } from '../helpers/cars-collection';
+import CarForm, { Values } from './car-form';
 import stringifyProps, { StringifyObjectProps } from '../helpers/stingify-object';
 import SelectField from './select-field';
 import type CarJoined from '../types/car-joined';
-import CarForm, { Values } from './car-form';
 
 const ALL_BRAND_ID = '-1' as const;
 const ALL_CAR_TITLE = 'Visi automobiliai' as const;
@@ -14,19 +14,19 @@ const ALL_BRAND_TITLE = 'Markė' as const;
 const initialBrandId = brands[0].id;
 
 class App {
-  private htmlElement: HTMLElement;
+  private carsCollection: CarsCollection;
 
   private editedCarId: string | null;
 
-  private carsCollection: CarsCollection;
+  private selectedBrandId: string | null;
 
-  private selectedBrandId: null | string;
-
-  private carTable: Table<StringifyObjectProps<CarJoined>>;
+  private brandSelect: SelectField;
 
   private carForm: CarForm;
 
-  private brandSelect: SelectField;
+  private carTable: Table<StringifyObjectProps<CarJoined>>;
+
+  private htmlElement: HTMLElement;
 
   public constructor(selector: string) {
     const foundElement = document.querySelector<HTMLElement>(selector);
@@ -69,7 +69,7 @@ class App {
         year: '0000',
       },
       submitBtnText: 'Sukurti',
-      onSubmit: this.handleCreateCar,
+      onSubmit: this.handleCarCreate,
       status: 'create',
     });
   }
@@ -95,8 +95,11 @@ class App {
     this.update();
   };
 
-  private handleCreateCar = ({
-    brand, model, price, year,
+  private handleCarCreate = ({
+    brand,
+    model,
+    price,
+    year,
   }: Values): void => {
     const carProps: CarProps = {
       brandId: brand,
@@ -111,7 +114,10 @@ class App {
   };
 
   private handleCarUpdate = ({
-    brand, model, price, year,
+    brand,
+    model,
+    price,
+    year,
   }: Values): void => {
     if (this.editedCarId) {
       const carProps: CarProps = {
@@ -123,6 +129,7 @@ class App {
 
       this.carsCollection.carUpdate(this.editedCarId, carProps);
       this.editedCarId = null;
+
       this.update();
     }
   };
@@ -152,9 +159,7 @@ class App {
         alert(`Klaida! nėra tokios mašinos ${editedCarId}`);
         return;
       }
-
       const model = models.find((newModel) => newModel.id === editedCar.modelId);
-
       if (!model) {
         alert(`Klaida! nėra tokios mašinos su ${model}`);
         return;
@@ -183,7 +188,7 @@ class App {
           year: '0000',
         },
         status: 'create',
-        onSubmit: this.handleCreateCar,
+        onSubmit: this.handleCarCreate,
       });
     }
   };

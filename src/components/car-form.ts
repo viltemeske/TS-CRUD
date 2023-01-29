@@ -26,8 +26,6 @@ type Fields = {
 };
 
 class CarForm {
-    public htmlElement: HTMLFormElement;
-
     private props: CarFormProps;
 
     private fields: Fields;
@@ -37,6 +35,8 @@ class CarForm {
     private htmlFieldsContainer: HTMLDivElement;
 
     private htmlSubmitBtn: HTMLButtonElement;
+
+    public htmlElement: HTMLFormElement;
 
     constructor(props: CarFormProps) {
         this.props = props;

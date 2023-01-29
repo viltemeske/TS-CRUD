@@ -15,18 +15,16 @@ export type TableProps<Type> = {
 };
 
 class Table<Type extends RowData> {
-  public htmlElement: HTMLTableElement;
-
   private props: TableProps<Type>;
 
   private tbody: HTMLTableSectionElement;
 
   private thead: HTMLTableSectionElement;
 
+  public htmlElement: HTMLTableElement;
+
   public constructor(props: TableProps<Type>) {
     this.props = props;
-
-    this.checkColumnsCompatability();
 
     this.htmlElement = document.createElement('table');
 
@@ -34,6 +32,7 @@ class Table<Type extends RowData> {
 
     this.tbody = document.createElement('tbody');
 
+    this.checkColumnsCompatability();
     this.initialize();
     this.renderView();
   }
@@ -56,19 +55,14 @@ class Table<Type extends RowData> {
   };
 
   private initialize = (): void => {
-    this.htmlElement.className = 'table table-striped order border p-3';
+    this.htmlElement.className = 'table table-striped order border p-3 shadow';
     this.htmlElement.append(
       this.thead,
       this.tbody,
     );
   };
 
-  private renderView = (): void => {
-    this.renderHead();
-    this.renderBody();
-  };
-
-  private renderHead = () => {
+  private renderHeadView = () => {
     const thElementsString = Object.values(this.props.columns)
       .map((columnName) => `<th>${columnName}</th>`)
       .join('');
@@ -86,7 +80,7 @@ class Table<Type extends RowData> {
 `;
   };
 
-  private renderBody = () => {
+  private renderBodyView = () => {
     this.tbody.innerHTML = '';
     const rows = this.props.rowsData
       .map((rowData) => {
@@ -108,7 +102,6 @@ class Table<Type extends RowData> {
         btnContainer.className = 'd-flex gap-2 justify-content-end';
         btnContainer.append(updateButton, deleteButton);
         btnContainer.addEventListener('click', () => {
-          tr.classList.add('row-active');
         });
 
         const td = document.createElement('td');
@@ -125,6 +118,11 @@ class Table<Type extends RowData> {
       });
 
     this.tbody.append(...rows);
+  };
+
+  private renderView = (): void => {
+    this.renderHeadView();
+    this.renderBodyView();
   };
 
   public updateProps = (newProps: Partial<TableProps<Type>>): void => {
