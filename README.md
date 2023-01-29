@@ -11,11 +11,20 @@ npm i
 ```
 ## Project initialization
 Open terminal in root folder and run command:
-## Production
+### Production
 ```
 npm run build
 ```
-## Development
+### Development
 ```
 npm run start
 ```
+## File structure
+
+- **components/** - aplankas skirtas komponentams, kurie naudojami atvaizduoti elementams DOM'e
+
+- **data/** - duomenų failai
+
+- **helpers/** - Pagalbinės funkcijos ir klasės, skirtos kodo perpanaudojimui
+
+- **types/** - bendriniai tipai
