@@ -8,6 +8,7 @@
     "start": "webpack serve --config webpack.config.dev.js"
   },
   "devDependencies": {
+    "@types/uuid": "^9.0.0",
     "@typescript-eslint/eslint-plugin": "^5.14.0",
     "@typescript-eslint/parser": "^5.14.0",
     "css-loader": "^6.7.3",
@@ -33,5 +34,8 @@
   "bugs": {
     "url": "https://github.com/viltemeske/TS-CRUD/issues"
   },
-  "homepage": "https://github.com/viltemeske/TS-CRUD#readme"
+  "homepage": "https://github.com/viltemeske/TS-CRUD#readme",
+  "dependencies": {
+    "uuid": "^9.0.0"
+  }
 }

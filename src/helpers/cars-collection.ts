@@ -1,3 +1,4 @@
+import { v4 as createId } from 'uuid';
 import Car from '../types/car';
 import Model from '../types/model';
 import Brand from '../types/brand';
@@ -16,8 +17,6 @@ export type CarProps = {
   year: number
 };
 export type CreateCarProps = Omit<Car, 'id'> & { brandId: string };
-
-const createId = (): string => String(Math.floor(Math.random() * 100000000000000));
 
 class CarsCollection {
   private props: CarsCollectionProps;
